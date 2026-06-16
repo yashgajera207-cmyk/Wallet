@@ -1,18 +1,24 @@
-"use client";
+import { NextRequest, NextResponse } from "next/server";
 
-import { useAccount } from "wagmi";
-import { useEffect } from "react";
+export async function POST(
+  req: NextRequest
+) {
+  try {
+    const { walletAddress } =
+      await req.json();
 
-export default function CreateProfile() {
-  const { address, isConnected } = useAccount();
-
-  useEffect(() => {
-    if (!address || !isConnected) return;
-
-    localStorage.setItem("walletAddress", address);
-
-    console.log("Wallet Saved:", address);
-  }, [address, isConnected]);
-
-  return null;
+    return NextResponse.json({
+      success: true,
+      walletAddress,
+    });
+  } catch {
+    return NextResponse.json(
+      {
+        error: "Failed to create profile",
+      },
+      {
+        status: 500,
+      }
+    );
+  }
 }
